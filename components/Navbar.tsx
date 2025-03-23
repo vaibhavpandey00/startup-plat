@@ -1,11 +1,12 @@
 import { auth, signIn, signOut } from "@/auth"
+import { BadgePlus, LogOut } from "lucide-react";
 import Image from "next/image"
 import Link from "next/link"
+import { Avatar, AvatarFallback } from "./ui/avatar";
+import { AvatarImage } from "@radix-ui/react-avatar";
 
 const Navbar = async () => {
     const session = await auth();
-    // console.log(session);
-
 
     return (
         <header className="px-5 py-3 bg-white shadow-sm font-work-sans">
@@ -18,20 +19,25 @@ const Navbar = async () => {
                     {session && session?.user ? (
                         <>
                             <Link href="/startup/create">
-                                <span className="cursor-pointer">
-                                    Creat
+                                <span className="max-sm:hidden cursor-pointer">
+                                    Create
                                 </span>
+                                <BadgePlus className="size-6 sm:hidden" />
                             </Link>
 
                             <form action={async () => {
                                 "use server";
                                 await signOut();
                             }}>
-                                <button type="submit" className="cursor-pointer">Logout</button>
+                                <button type="submit" className="hidden sm:block test-red-500 cursor-pointer">Logout</button>
+                                <LogOut className="size-6 sm:hidden text-red-500"/>
                             </form>
 
-                            <Link href={`/user/${session?.id}`}>
-                                <span className="cursor-pointer">{session?.user?.name}</span>
+                            <Link href={`/user/${session?.id}`} className="flex items-center md:gap-2 cursor-pointer">
+                                <Avatar className="size-10" >
+                                    <AvatarImage src={session?.user?.image as string} alt={session?.user?.name as string} />
+                                    <AvatarFallback>AV</AvatarFallback>
+                                </Avatar>
                             </Link>
                         </>
 

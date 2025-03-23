@@ -1,11 +1,23 @@
-import { formatData } from "@/lib/utils"
+import { cn, formatData } from "@/lib/utils"
 import { EyeIcon } from "lucide-react"
 import Image from "next/image";
 import Link from "next/link"
 import { Button } from "./ui/button";
+import { Author, Startup } from "@/sanity/types";
+import { Skeleton } from "./ui/skeleton";
+
+export type StartupTypeCard = Omit<Startup, "author"> & { author?: Author }
 
 const StartupCard = ({ post }: { post: StartupTypeCard }) => {
-    const { _id, _createdAt, views, author, description, image, category, title } = post;
+    const {
+        _id,
+        _createdAt,
+        views,
+        author,
+        description,
+        image,
+        category,
+        title } = post;
 
     return (
         <li className="startup-card group">
@@ -34,7 +46,7 @@ const StartupCard = ({ post }: { post: StartupTypeCard }) => {
                 </div>
 
                 <Link href={`/user/${author?._id}`}>
-                    <Image src="http://placehold.co/300x300" alt="startup" width={48} height={48} className="rounded-full" />
+                    <Image src={author?.image as string} alt="startup" width={48} height={48} className="rounded-full" />
                 </Link>
             </div>
 
@@ -46,7 +58,7 @@ const StartupCard = ({ post }: { post: StartupTypeCard }) => {
             </Link>
 
             <div className="flex-between gap-3 mt-5">
-                <Link href={`/?query=${category.toLowerCase()}`}>
+                <Link href={`/?query=${category?.toLowerCase()}`}>
                     <p className="text-16-medium">
                         {category}
                     </p>
@@ -59,6 +71,16 @@ const StartupCard = ({ post }: { post: StartupTypeCard }) => {
             </div>
         </li>
     )
-}
+};
+
+export const StartupCardSkeleton = () => (
+    <>
+      {[0, 1, 2, 3, 4].map((index: number) => (
+        <li key={cn("skeleton", index)}>
+          <Skeleton className="startup-card_skeleton" />
+        </li>
+      ))}
+    </>
+  );
 
 export default StartupCard
